@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -32,18 +31,39 @@ class _InChatState extends State<InChat> {
   @override
   void initState() {
     controller2 = TextEditingController();
-    database.collection("Chats").get().then((value) {
-      docu = value.docs.singleWhere((element) =>
-      element.id.toString().contains(auth.currentUser.displayName.toString()) && element.id.toString().contains(SeconduserName));
-      messages = database.collection("Chats/" + docu.id + "/Messages").snapshots();
-      _controller2 = ScrollController();
+    // database.collection("Chats").doc(auth.currentUser.uid + SecondUserId).get().then((value) {
+    //   if(value.exists){
+    //     print("==========a exist");
+    //     docu = database.collection("Chats").doc(auth.currentUser.uid + SecondUserId);
+    //   }
+    // });
+    // database.collection("Chats").doc(SecondUserId + auth.currentUser.uid).get().then((value) {
+    //   if(value.exists){
+    //     print("=========b exist");
+    //     docu = database.collection("Chats").doc(SecondUserId + auth.currentUser.uid);
+    //   }
+    // });
+    // database.collection("Chats").get().then((value) {
+    //   docu = value.docs.singleWhere((element) => (element.id.contains(auth.currentUser.displayName) && element.id.contains(SeconduserName)));
+    // });
+    addUser();
+    database.collection("Chats").get().then((value) => print(value.docs.length));
+    _controller2 = ScrollController();
+    if(docu == null){
+      print("=================creating chat document");
+      database.collection("Chats").doc(auth.currentUser.uid + SecondUserId).collection("Messages").doc(Timestamp.now().millisecondsSinceEpoch.toString()).set(
+          {
 
-    });
+          });
+      docu =  database.collection("Chats").doc(auth.currentUser.uid + SecondUserId);
+    }
+    messages = database.collection("Chats/" + docu.id + "/Messages").snapshots();
+    print("=========${docu.id}");
     super.initState();
-
   }
   @override
   Widget build(BuildContext context) {
+    print(SecondUserId + auth.currentUser.uid);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(icon: Icon(Icons.arrow_back_ios_sharp,color: Colors.white,), onPressed: () => Navigator.pop(context)),
