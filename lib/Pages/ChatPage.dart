@@ -1,4 +1,6 @@
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:nebula_chat_app/main.dart';
 import 'package:nebula_chat_app/backend/pics.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -27,16 +29,19 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin {
       }
 
     });
-    database.collection("Users").doc(auth.currentUser.uid).get().then((value) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      database.collection("Users").doc(auth.currentUser.uid).get().then((value) {
         if (!value.exists) {
           if(auth.currentUser.emailVerified) {
-          database.collection("Users").doc(auth.currentUser.uid).set({
-            "Id": auth.currentUser.uid,
-            "Name": auth.currentUser.displayName,
-          });
+            database.collection("Users").doc(auth.currentUser.uid).set({
+              "Id": auth.currentUser.uid,
+              "Name": auth.currentUser.displayName,
+            });
+          }
         }
-      }
       });
+    });
+
     chatPage = database.collection("Users").snapshots();
     if(auth.currentUser.displayName == null){
       auth.currentUser.updateProfile(displayName: name);
@@ -87,10 +92,7 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin {
                                 ),
                               ),
                               onTap: () {
-                                setState(() {
-                                  themeState =
-                                      (themeState == light) ? dark : light;
-                                });
+                                  changeBrightness();
                               }),
                           Container(
                             width:
@@ -187,11 +189,7 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin {
                                 else
                                   return ListView.separated(
                                       itemBuilder: (context, int index) {
-                                        if (snapshots
-                                            .data.docs[index]["Name"]
-                                            .toString() !=
-                                            auth.currentUser.displayName
-                                                .toString()) {
+                                        if ((snapshots.data.docs[index]["Name"].toString() != auth.currentUser.displayName.toString())) {
                                           return
                                             Center(
                                               child: InkWell(
@@ -202,18 +200,8 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin {
                                                             builder:
                                                                 (context) =>
                                                                 InChat(
-                                                                  secondUserId: snapshots
-                                                                      .data
-                                                                      .docs[
-                                                                  index]
-                                                                  ["Id"]
-                                                                      .toString(),
-                                                                  SeconduserName: snapshots
-                                                                      .data
-                                                                      .docs[
-                                                                  index]
-                                                                  ["Name"]
-                                                                      .toString(),
+                                                                  secondUserId: snapshots.data.docs[index]["Id"].toString(),
+                                                                  SeconduserName: snapshots.data.docs[index]["Name"].toString(),
                                                                 ))),
                                                 child: Container(
                                                   height: MediaQuery
@@ -322,7 +310,12 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin {
                                                             ///name
                                                             Container(
                                                               child: Text(
-                                                                "Hello how are you are you fine...",
+                                                               fetchLastMessage(auth.currentUser.uid, snapshots
+                                                                   .data
+                                                                   .docs[
+                                                               index]
+                                                               ["Id"]
+                                                                   .toString() ),
                                                                 style: TextStyle(
                                                                     fontWeight:
                                                                     FontWeight
@@ -558,8 +551,17 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin {
       ),
     );
   }
-}
 
+  void changeBrightness() {
+    DynamicTheme.of(context).setBrightness(Theme.of(context).brightness == dark.brightness? light.brightness: dark.brightness);
+  }
+
+
+}
+changeTheme() {
+  themeState = (themeState == light) ? dark : light;
+  return themeState;
+}
 class BehindBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -579,3 +581,28 @@ class BehindBack extends StatelessWidget {
     );
   }
 }
+
+
+String fetchLastMessage(String user1 ,String user2) {
+  String docu1;
+  String msg;
+  Future collect = database.collection("Chats").get().then((value) {
+    var usersinChat = value.docs.map((e) => e.id).toList();
+    docu1 = usersinChat.singleWhere((element) => ((element == user1 +  user2) || (element ==  user2 + user1)),orElse: ()
+    => user1 + user2
+    );
+  }).then((value) {
+    database.collection("Chats").doc(docu1).get().then((value) {
+    msg = value.data()["lastMessage"].toString();
+    print("______1");
+    });
+  });
+  print("______2");
+  if(msg == null){
+    return "...";
+  }
+  else return msg;
+}
+
+
+

@@ -6,6 +6,7 @@ import 'package:nebula_chat_app/Pages/LoginPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:nebula_chat_app/Pages/ChatPage.dart';
 import 'package:nebula_chat_app/Pages/InChatPage.dart';
+import 'package:dynamic_theme/dynamic_theme.dart';
 
 void main() async{
  WidgetsFlutterBinding.ensureInitialized();
@@ -47,18 +48,25 @@ ThemeData dark = ThemeData.dark().copyWith(
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Nebula',
-      theme: themeState,
-      initialRoute: (FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser.emailVerified )?'ChatPage':'LoginSection',
-      //initialRoute: 'ChatPage',
-      routes: {
-        'LoginSection':(context) => Login(),
-        'ChatPage':(context) => Chats(),
-        'InchatPage':(context) => InChat()
-      },
-    );
+    return new DynamicTheme(
+      defaultBrightness: light.brightness,
+      data: (brightness) => ThemeData(
+      brightness: brightness
+    ) ,
+    themedWidgetBuilder: (context,theme) =>
+      new MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Nebula',
+        theme: changeTheme(),
+        initialRoute: (FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser.emailVerified )?'ChatPage':'LoginSection',
+        //initialRoute: 'ChatPage',
+        routes: {
+          'LoginSection':(context) => Login(),
+          'ChatPage':(context) => Chats(),
+          'InchatPage':(context) => InChat()
+        },
+      ),
+     );
   }
 }
 

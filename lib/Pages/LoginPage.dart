@@ -150,6 +150,7 @@ class _LoginState extends State<Login> {
                       onSubmitted: (text) {
                         setState(() {
                           _nameController.text = text;
+                          name = text;
 
 
                         });
@@ -206,7 +207,10 @@ class _LoginState extends State<Login> {
                             _passwordController.text.isNotEmpty) {
                           username = _usernameController.text;
                           password = _passwordController.text;
-                          name = _nameController.text;
+                          if(_nameController.text.isNotEmpty){
+                            name = _nameController.text;
+                          }
+
                         }
                         else
                           loginKey.currentState.showSnackBar(snackBar);
@@ -231,7 +235,7 @@ class _LoginState extends State<Login> {
                       else{
                         auth.currentUser.updateProfile(displayName: name).then((value) => database.collection("Users").doc().update( {
                           "Id":auth.currentUser.uid,
-                          "Name":auth.currentUser.displayName,
+                          "Name": name,
                         }));
                         Navigator.push(context, MaterialPageRoute(builder: (context) => Chats()));
                       }

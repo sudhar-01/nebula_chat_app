@@ -17,7 +17,7 @@ class InChat extends StatefulWidget {
 
 class _InChatState extends State<InChat> {
   var messages;
-  var docu;
+  String docu;
   List ko;
   Future<List<QuerySnapshot>> offlinemessage;
   final String SecondUserId;
@@ -25,45 +25,29 @@ class _InChatState extends State<InChat> {
   String typeMessage;
   ScrollController _controller2;
   TextEditingController controller2;
-
   _InChatState(this.SecondUserId,this.SeconduserName);
-
   @override
   void initState() {
-    controller2 = TextEditingController();
-    // database.collection("Chats").doc(auth.currentUser.uid + SecondUserId).get().then((value) {
-    //   if(value.exists){
-    //     print("==========a exist");
-    //     docu = database.collection("Chats").doc(auth.currentUser.uid + SecondUserId);
-    //   }
-    // });
-    // database.collection("Chats").doc(SecondUserId + auth.currentUser.uid).get().then((value) {
-    //   if(value.exists){
-    //     print("=========b exist");
-    //     docu = database.collection("Chats").doc(SecondUserId + auth.currentUser.uid);
-    //   }
-    // });
-    // database.collection("Chats").get().then((value) {
-    //   docu = value.docs.singleWhere((element) => (element.id.contains(auth.currentUser.displayName) && element.id.contains(SeconduserName)));
-    // });
-    addUser();
-    database.collection("Chats").get().then((value) => print(value.docs.length));
-    _controller2 = ScrollController();
-    if(docu == null){
-      print("=================creating chat document");
-      database.collection("Chats").doc(auth.currentUser.uid + SecondUserId).collection("Messages").doc(Timestamp.now().millisecondsSinceEpoch.toString()).set(
-          {
-
-          });
-      docu =  database.collection("Chats").doc(auth.currentUser.uid + SecondUserId);
-    }
-    messages = database.collection("Chats/" + docu.id + "/Messages").snapshots();
-    print("=========${docu.id}");
     super.initState();
+    controller2 = TextEditingController();
+    addUser();
+    _controller2 = ScrollController();
+    database.collection("Chats").get().then((value) {
+      var usersinChat = value.docs.map((e) => e.id).toList();
+      print(usersinChat);
+      docu = usersinChat.singleWhere((element) => ((element == auth.currentUser.uid.toString() + SecondUserId) || (element == SecondUserId + auth.currentUser.uid.toString())),orElse: ()
+        => auth.currentUser.uid.toString() + SecondUserId
+      );
+
+    }).then((value) {
+      messages = database.collection("Chats").doc(docu).collection("Messages").snapshots();
+      print("_________________$docu");
+    });
+
   }
   @override
   Widget build(BuildContext context) {
-    print(SecondUserId + auth.currentUser.uid);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(icon: Icon(Icons.arrow_back_ios_sharp,color: Colors.white,), onPressed: () => Navigator.pop(context)),
@@ -90,7 +74,6 @@ class _InChatState extends State<InChat> {
                 child: StreamBuilder(
                   stream: messages,
                   builder: (context, snapshot){
-
                     if(!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
                     else
                       return ListView.builder(
@@ -100,7 +83,6 @@ class _InChatState extends State<InChat> {
 
                         if (!snapshot.hasData) return SizedBox();
                         else {
-
                           if (snapshot.data.docs[index]["from"] == SecondUserId){
                             print("Second ======> $SecondUserId");
                             if(_keyboardIsVisible()){
@@ -140,7 +122,7 @@ class _InChatState extends State<InChat> {
                         child: TextField(
                           controller: controller2,
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Theme.of(context).textTheme.headline1.color,
                           ),
 
                           decoration: InputDecoration(
@@ -179,13 +161,21 @@ class _InChatState extends State<InChat> {
 
                       child: InkWell(
                         onTap: () {
-                          database.collection("Chats/" + docu.id + "/Messages").doc(Timestamp.now().millisecondsSinceEpoch.toString()).set(
+                          database.collection("Chats").doc(docu).collection("Messages").doc(Timestamp.now().millisecondsSinceEpoch.toString()).set(
                               {
                                 "from":auth.currentUser.uid.toString(),
                                 "message": controller2.text,
                                 "timestamp" : Timestamp.now().millisecondsSinceEpoch
 
                               });
+                          database.collection("Chats").doc(docu).set({
+                            "users" : docu,
+                            "lastMessage" : controller2.text
+                          },);
+                          // database.collection("Chats").doc(docu).update({
+                          //   "users" : docu,
+                          //   "lastMessage" : controller2.text
+                          // });
                           setState(() {
                             controller2.text = "";
                           });
@@ -247,7 +237,7 @@ class ReceiveContainer extends StatelessWidget {
           ),
           child: Padding(
             padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.4*0.1),
-            child: Text(text,style: TextStyle(
+            child: SelectableText(text,style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: GFS(19, context),
                 color:Theme.of(context).textTheme.headline1.color
@@ -295,7 +285,7 @@ class SendContainer extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.4*0.1),
-                  child: Text(text,style: TextStyle(
+                  child: SelectableText(text,style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: GFS(19, context),
                       color: Colors.white
