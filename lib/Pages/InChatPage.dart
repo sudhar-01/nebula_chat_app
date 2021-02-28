@@ -41,14 +41,21 @@ class _InChatState extends State<InChat> {
       );
 
     }).then((value) {
-      messages = database.collection("Chats").doc(docu).collection("Messages").snapshots();
+      if(database.collection("Chats").doc(docu).collection("Messages").snapshots().isEmpty == true){
+        database.collection("Chats").doc(docu).collection("Messages").add({
+          "from":auth.currentUser.uid.toString(),
+          "message": "hi",
+          "timestamp" : FieldValue.serverTimestamp()
+        });
+
+      }
+      messages = database.collection("Chats").doc(docu).collection("Messages").orderBy("timestamp").snapshots();
       print("_________________$docu");
     });
 
   }
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(icon: Icon(Icons.arrow_back_ios_sharp,color: Colors.white,), onPressed: () => Navigator.pop(context)),
@@ -93,6 +100,7 @@ class _InChatState extends State<InChat> {
                                 text: snapshot.data.docs[index]["message"].toString());
                           }
                           else{
+                            print("First ======> ${auth.currentUser.uid}");
                             return SendContainer(
                               text: snapshot.data.docs[index]["message"].toString(), status: "seen",);
                           }
@@ -162,16 +170,18 @@ class _InChatState extends State<InChat> {
 
                       child: InkWell(
                         onTap: () {
-                          database.collection("Chats").doc(docu).collection("Messages").doc(DateTime.parse(FieldValue.serverTimestamp().toString()).millisecondsSinceEpoch.toString()).set(
+                          print(FieldValue.serverTimestamp().toString());
+                          database.collection("Chats").doc(docu).collection("Messages").add(
                               {
                                 "from":auth.currentUser.uid.toString(),
                                 "message": controller2.text,
-                                "timestamp" : Timestamp.now().millisecondsSinceEpoch.toString()
+                                "timestamp" : FieldValue.serverTimestamp()
 
                               });
                           database.collection("Chats").doc(docu).set({
                             "users" : docu,
-                            "lastMessage" : controller2.text
+                            "lastMessage" : controller2.text,
+                            "type": "Personnel"
                           },);
                           setState(() {
                             controller2.text = "";
