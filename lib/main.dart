@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nebula_chat_app/Pages/LoginPage.dart';
+import 'package:nebula/Pages/LoginPage.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:nebula_chat_app/Pages/ChatPage.dart';
-import 'package:nebula_chat_app/Pages/InChatPage.dart';
+import 'package:nebula/Pages/ChatPage.dart';
+import 'package:nebula/Pages/InChatPage.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 
 void main() async{

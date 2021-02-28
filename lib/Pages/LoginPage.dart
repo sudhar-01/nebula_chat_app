@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nebula_chat_app/Pages/ChatPage.dart';
-import 'package:nebula_chat_app/backend/pics.dart';
-import 'package:nebula_chat_app/backend/FireBase.dart';
-import 'package:nebula_chat_app/main.dart';
+import 'package:nebula/Pages/ChatPage.dart';
+import 'package:nebula/backend/pics.dart';
+import 'package:nebula/backend/FireBase.dart';
+import 'package:nebula/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 class Login extends StatefulWidget {
   @override

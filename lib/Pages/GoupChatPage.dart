@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nebula_chat_app/main.dart';
+import 'package:nebula/main.dart';
 class GroupChat extends StatefulWidget {
   @override
   _GroupChatState createState() => _GroupChatState();

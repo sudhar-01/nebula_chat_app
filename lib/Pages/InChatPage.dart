@@ -2,10 +2,11 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:nebula_chat_app/backend/pics.dart';
-import 'package:nebula_chat_app/main.dart';
+import 'package:nebula/backend/pics.dart';
+import 'package:nebula/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nebula_chat_app/backend/FireBase.dart';
+import 'package:nebula/backend/FireBase.dart';
+import 'package:date_time_format/date_time_format.dart';
 class InChat extends StatefulWidget {
   final String secondUserId;
   final String SeconduserName;
@@ -161,21 +162,17 @@ class _InChatState extends State<InChat> {
 
                       child: InkWell(
                         onTap: () {
-                          database.collection("Chats").doc(docu).collection("Messages").doc(Timestamp.now().millisecondsSinceEpoch.toString()).set(
+                          database.collection("Chats").doc(docu).collection("Messages").doc(DateTime.parse(FieldValue.serverTimestamp().toString()).millisecondsSinceEpoch.toString()).set(
                               {
                                 "from":auth.currentUser.uid.toString(),
                                 "message": controller2.text,
-                                "timestamp" : Timestamp.now().millisecondsSinceEpoch
+                                "timestamp" : Timestamp.now().millisecondsSinceEpoch.toString()
 
                               });
                           database.collection("Chats").doc(docu).set({
                             "users" : docu,
                             "lastMessage" : controller2.text
                           },);
-                          // database.collection("Chats").doc(docu).update({
-                          //   "users" : docu,
-                          //   "lastMessage" : controller2.text
-                          // });
                           setState(() {
                             controller2.text = "";
                           });

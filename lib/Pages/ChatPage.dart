@@ -1,11 +1,11 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:nebula_chat_app/main.dart';
-import 'package:nebula_chat_app/backend/pics.dart';
+import 'package:nebula/main.dart';
+import 'package:nebula/backend/pics.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nebula_chat_app/Pages/InChatPage.dart';
-import 'package:nebula_chat_app/backend/FireBase.dart';
+import 'package:nebula/Pages/InChatPage.dart';
+import 'package:nebula/backend/FireBase.dart';
 
 class Chats extends StatefulWidget {
   @override
