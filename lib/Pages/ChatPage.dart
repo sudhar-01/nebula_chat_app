@@ -6,6 +6,7 @@ import 'package:nebula/backend/pics.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nebula/Pages/InChatPage.dart';
 import 'package:nebula/backend/FireBase.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Chats extends StatefulWidget {
   @override
@@ -15,10 +16,17 @@ class Chats extends StatefulWidget {
 class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin {
   var chatPage;
   TabController tabController;
+  String _token;
   @override
   void initState() {
+   FirebaseMessaging().getToken().then((value) {
+     _token = value;
+   });
+    tabController = TabController(length: 2, vsync: this, initialIndex: 0)
+   ..addListener(() {
+     setState(() {
 
-    tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+    });});
     database.collection("Online").doc(auth.currentUser.uid).get().then((value){
       if(!value.exists)
       {
@@ -36,6 +44,7 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin {
             database.collection("Users").doc(auth.currentUser.uid).set({
               "Id": auth.currentUser.uid,
               "Name": auth.currentUser.displayName,
+              "token": _token
             });
           }
         }
@@ -48,12 +57,39 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin {
     }
     super.initState();
   }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    tabController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("token: $_token");
     print(auth.currentUser);
     print(auth.currentUser.emailVerified);
     return Scaffold(
+      floatingActionButton: (tabController.index == 0)?
+      FloatingActionButton(
+        onPressed: () => null,
+        backgroundColor: Theme.of(context).primaryColorDark,
+        isExtended: true,
+        child: Icon(Icons.add,color: Colors.white,size: GFS(30,context))):
+      FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.pushNamed(context, 'AddUserPage');
+        },
+        backgroundColor: Theme.of(context).primaryColorDark,
+        icon: Icon(Icons.add,color: Colors.white,size: GFS(30,context)),
+        label: Text(
+                      "Add group",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: GFS(20, context),
+                          color: Colors.white),
+                    ),
+      ),
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -215,9 +251,7 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin {
                                                       .width *
                                                       0.9,
                                                   decoration: BoxDecoration(
-                                                      color: Theme
-                                                          .of(context)
-                                                          .cardColor,
+                                                      color: Theme.of(context).cardColor,
                                                       // gradient: LinearGradient(begin: Alignment.centerLeft,end: Alignment.centerRight,colors: [Color(0xFFD5DAFF),Color(0xFFE0ECFF),Color(0xFFD8DEFF),Color(0xFFE7EDFF),Color(0xFFD4C9FF),]),
                                                       borderRadius:
                                                       BorderRadius.circular(
@@ -555,7 +589,6 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin {
   void changeBrightness() {
     DynamicTheme.of(context).setBrightness(Theme.of(context).brightness == dark.brightness? light.brightness: dark.brightness);
   }
-
 
 }
 changeTheme() {

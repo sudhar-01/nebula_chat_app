@@ -6,11 +6,12 @@ import 'package:nebula/backend/pics.dart';
 import 'package:nebula/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nebula/backend/FireBase.dart';
-import 'package:date_time_format/date_time_format.dart';
 class InChat extends StatefulWidget {
   final String secondUserId;
+  // ignore: non_constant_identifier_names
   final String SeconduserName;
 
+  // ignore: non_constant_identifier_names
   const InChat({Key key, this.secondUserId,this.SeconduserName}) : super(key: key);
   @override
   _InChatState createState() => _InChatState(secondUserId,SeconduserName);
@@ -21,7 +22,9 @@ class _InChatState extends State<InChat> {
   String docu;
   List ko;
   Future<List<QuerySnapshot>> offlinemessage;
+  // ignore: non_constant_identifier_names
   final String SecondUserId;
+  // ignore: non_constant_identifier_names
   final String SeconduserName;
   String typeMessage;
   ScrollController _controller2;
@@ -41,6 +44,7 @@ class _InChatState extends State<InChat> {
       );
 
     }).then((value) {
+      // ignore: unrelated_type_equality_checks
       if(database.collection("Chats").doc(docu).collection("Messages").snapshots().isEmpty == true){
         database.collection("Chats").doc(docu).collection("Messages").add({
           "from":auth.currentUser.uid.toString(),
@@ -238,8 +242,8 @@ class ReceiveContainer extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color:Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(20.0),
-            boxShadow: [BoxShadow(color: Colors.black26,spreadRadius: 1.0,blurRadius: 2.0)]
+            borderRadius: BorderRadius.only(bottomRight:Radius.circular(20.0),topRight: Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
+            boxShadow: [BoxShadow(color: Colors.black26,spreadRadius: 1.0,blurRadius: 2.0,offset: Offset(2.0,3.0))]
 
           ),
           child: Padding(
@@ -286,8 +290,8 @@ class SendContainer extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                     color:Theme.of(context).primaryColorDark,
-                    borderRadius: BorderRadius.circular(20.0),
-                    boxShadow: [BoxShadow(color: Colors.black26,spreadRadius: 1.0,blurRadius: 2.0)]
+                    borderRadius: BorderRadius.only(topLeft:Radius.circular(20.0),topRight: Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
+                    boxShadow: [BoxShadow(color: Colors.black26,spreadRadius: 1.0,blurRadius: 2.0,offset: Offset(-1.0,1.5))]
 
                 ),
                 child: Padding(
