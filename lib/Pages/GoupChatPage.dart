@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:nebula/Pages/ChatPage.dart';
+import 'package:nebula/Pages/GroupInChats.dart';
+import 'package:nebula/Pages/InChatPage.dart';
+import 'package:nebula/backend/FireBase.dart';
 import 'package:nebula/main.dart';
 class GroupChat extends StatefulWidget {
   @override
@@ -6,82 +10,226 @@ class GroupChat extends StatefulWidget {
 }
 
 class _GroupChatState extends State<GroupChat> {
+  var _groupChats;
+  @override
+  void initState() {
+    super.initState();
+    _groupChats = database.collection('GroupChats').snapshots();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-            height:MediaQuery.of(context).size.height*0.12,
-            width: MediaQuery.of(context).size.width*0.9,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(begin: Alignment.centerLeft,end: Alignment.centerRight,colors: [Color(0xFFD5DAFF),Color(0xFFE0ECFF),Color(0xFFD8DEFF),Color(0xFFE7EDFF),Color(0xFFD4C9FF),]),
-                borderRadius: BorderRadius.circular(20.0),
-                boxShadow: [BoxShadow(color: Colors.black26,spreadRadius: 1.0,blurRadius: 4.0,offset: Offset(2.0,4.0))]
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  height:MediaQuery.of(context).size.height*0.11*0.75,
-                  width: MediaQuery.of(context).size.width*0.8*0.2,
-                  decoration: BoxDecoration(
-                    color: Colors.black26,
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
+      child: StreamBuilder(
+          stream: _groupChats,
+          builder: (context, AsyncSnapshot snapshots) {
 
-                ), ///picture
-                Container(
-                  height:MediaQuery.of(context).size.height*0.11*0.9,
-                  width: MediaQuery.of(context).size.width*0.8*0.65,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: Text("Aravindh",style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: GFS(20, context),
-                            color: Colors.black
-                        ),),
-                      ),  ///name
-                      Container(
-                        child: Text("Hello how are you are you fine...",style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: GFS(14, context),
-                            color: Colors.black
-                        ),),
-                      ), ///Chat
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("online",style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: GFS(14, context),
-                                color: Color(0xFF00C313)
-                            ),),
-                            Container(
-                              height:MediaQuery.of(context).size.height*0.11*0.9*0.2,
-                              width: MediaQuery.of(context).size.width*0.8*0.65*0.15,
-                              color: Color(0xFF0900FF),
-                            )
+            if (!snapshots.hasData)
+              return Center(
+                  child: CircularProgressIndicator());
+            else {
+              return ListView.separated(
+                  itemBuilder: (context, int index) {
+                    return Center(
+                      child: InkWell(
+                        onTap: () =>
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => GroupInChat(nameOfGroup: snapshots
+                            .data.docs[index]["Name"].toString(),members: snapshots.data
+                            .docs[index]["users"],))),
+                        child: Container(
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height *
+                              0.12,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width *
+                              0.9,
+                          decoration: BoxDecoration(
+                              color: Theme
+                                  .of(context)
+                                  .cardColor,
+                              // gradient: LinearGradient(begin: Alignment.centerLeft,end: Alignment.centerRight,colors: [Color(0xFFD5DAFF),Color(0xFFE0ECFF),Color(0xFFD8DEFF),Color(0xFFE7EDFF),Color(0xFFD4C9FF),]),
+                              borderRadius:
+                              BorderRadius.circular(
+                                  20.0),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors
+                                        .black26,
+                                    spreadRadius: 1.0,
+                                    blurRadius: 4.0,
+                                    offset:
+                                    Offset(2.0, 4.0))
+                              ]),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment
+                                .spaceEvenly,
+                            children: [
+                              Container(
+                                height:
+                                MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height *
+                                    0.11 *
+                                    0.75,
+                                width:
+                                MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width *
+                                    0.8 *
+                                    0.2,
+                                decoration: BoxDecoration(
+                                  color: Colors.black26,
+                                  borderRadius:
+                                  BorderRadius
+                                      .circular(10.0),
+                                ),
+                              ),
 
-                          ],
+                              ///picture
+                              Container(
+                                height:
+                                MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height *
+                                    0.11 *
+                                    0.9,
+                                width:
+                                MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width *
+                                    0.8 *
+                                    0.65,
+                                child: Column(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment
+                                      .spaceBetween,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .start,
+                                  children: [
+                                    Container(
+                                      child: Text(
+                                        snapshots
+                                            .data
+                                            .docs[
+                                        index]
+                                        ["Name"]
+                                            .toString(),
+                                        style: TextStyle(
+                                            fontWeight:
+                                            FontWeight
+                                                .w600,
+                                            fontSize: GFS(
+                                                20,
+                                                context),
+                                            color: Theme
+                                                .of(
+                                                context)
+                                                .textTheme
+                                                .headline1
+                                                .color),
+                                      ),
+                                    ),
+
+                                    ///name
+                                    Container(
+                                      child: Text("heelo",
+                                        // fetchLastMessage(auth.currentUser.uid, snapshots
+                                        //     .data
+                                        //     .docs[
+                                        // index]
+                                        // ["Id"]
+                                        //     .toString() ),
+                                        style: TextStyle(
+                                            fontWeight:
+                                            FontWeight
+                                                .w600,
+                                            fontSize: GFS(
+                                                14,
+                                                context),
+                                            color: Theme
+                                                .of(
+                                                context)
+                                                .textTheme
+                                                .headline1
+                                                .color),
+                                      ),
+                                    ),
+
+                                    ///Chat
+                                    Container(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment
+                                            .spaceBetween,
+                                        children: [
+                                          Text(
+                                            "online",
+                                            style: TextStyle(
+                                                fontWeight:
+                                                FontWeight
+                                                    .w600,
+                                                fontSize: GFS(
+                                                    14,
+                                                    context),
+                                                color: Color(
+                                                    0xFF00C313)),
+                                          ),
+                                          Container(
+                                            height: MediaQuery
+                                                .of(
+                                                context)
+                                                .size
+                                                .height *
+                                                0.11 *
+                                                0.9 *
+                                                0.2,
+                                            width: MediaQuery
+                                                .of(
+                                                context)
+                                                .size
+                                                .width *
+                                                0.8 *
+                                                0.65 *
+                                                0.15,
+                                            color: Color(
+                                                0xFF0900FF),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+
+                              ///Details
+                            ],
+                          ),
                         ),
-                      )
-                    ],
-
-                  ),
-
-                ) ///Details
-              ],
-            ),
-
-          )
-        ],
-      ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, int index) =>
+                      SizedBox(
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height *
+                            0.04,
+                      ),
+                  itemCount:
+                  snapshots.data.docs.length
+              );
+            }
+          }),
     );
   }
 }

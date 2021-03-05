@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nebula/Pages/AddUsers.dart';
+import 'package:nebula/Pages/GroupInChats.dart';
 import 'package:nebula/Pages/LoginPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:nebula/Pages/ChatPage.dart';
@@ -65,7 +66,8 @@ class MyApp extends StatelessWidget {
           'LoginSection':(context) => Login(),
           'ChatPage':(context) => Chats(),
           'InchatPage':(context) => InChat(),
-          'AddUserPage':(context) => AddUser()
+          'AddUserPage':(context) => AddUser(),
+          "GroupInChat":(context) => GroupInChat()
         },
       ),
      );
