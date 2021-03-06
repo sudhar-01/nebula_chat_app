@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nebula/Pages/ChatPage.dart';
+import 'package:nebula/Pages/MainPage.dart';
 import 'package:nebula/backend/pics.dart';
 import 'package:nebula/backend/FireBase.dart';
 import 'package:nebula/main.dart';

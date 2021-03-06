@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nebula/Pages/InChatPage.dart';
 import 'package:nebula/backend/FireBase.dart';
 import 'package:nebula/backend/pics.dart';
 import 'package:nebula/main.dart';
@@ -28,8 +27,6 @@ class _GroupInChatState extends State<GroupInChat> {
     super.initState();
     _controller3 = ScrollController();
     _messageController = TextEditingController();
-    print(nameOfGroup);
-    print("_____________$members");
     messages1 = database.collection("GroupChats").doc(nameOfGroup).collection("Messages").orderBy("timestamp").snapshots();
   }
   @override
@@ -145,7 +142,6 @@ class _GroupInChatState extends State<GroupInChat> {
 
                       child: InkWell(
                         onTap: () {
-                          print(FieldValue.serverTimestamp().toString());
                           database.collection("GroupChats").doc(nameOfGroup).collection("Messages").add(
                               {
                                 "from":auth.currentUser.uid.toString(),

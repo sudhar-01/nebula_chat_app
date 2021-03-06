@@ -23,8 +23,6 @@ class _AddUserState extends State<AddUser> {
           "Id": event.docs[index]["Id"],
           "isSelected" : false
         });
-        print(listValue);
-
       });
     });
     super.initState();
@@ -37,7 +35,6 @@ class _AddUserState extends State<AddUser> {
   }
   @override
   Widget build(BuildContext context) {
-    print(listValue);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(icon: Icon(Icons.arrow_back_ios_sharp,color: Colors.white,), onPressed: () => Navigator.pop(context)),
@@ -130,7 +127,7 @@ class _AddUserState extends State<AddUser> {
                           "Name": _groupName.text,
                           "lastMessage":" ",
                           "type":"Group",
-                          "users": listValue.map((e) => e["Id"]).toList()
+                          "users": listValue.where((element) => element["isSelected"] == true).map((e) => e["Id"]).toList()
                         }).catchError((onError) => Scaffold.of(context).showSnackBar(SnackBar(backgroundColor:Colors.red,duration: Duration(seconds: 1),content: Text(onError.toString()))));
                         database.collection("GroupChats").doc(_groupName.text).collection("Messages").add(
                             {
@@ -138,7 +135,6 @@ class _AddUserState extends State<AddUser> {
                               "message": "hi",
                               "timestamp" : FieldValue.serverTimestamp()
                             });
-                        print("group created name:${_groupName.text}  members: ${listValue.where((element) => element["isSelected"] == true)}");
                         _groupName.text = "";
                         Navigator.pop(context);
 

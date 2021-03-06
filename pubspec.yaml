@@ -26,8 +26,8 @@ dependencies:
   cloud_firestore:
   firebase_core:
   firebase_auth:
-  dynamic_theme: ^1.0.0
-  flutter_svg: ^0.19.1
+  dynamic_themes: ^0.1.0+1
+  flutter_svg: ^0.19.3
   date_time_format: ^1.1.1+1
   firebase_messaging:
 

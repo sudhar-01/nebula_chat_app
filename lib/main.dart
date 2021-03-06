@@ -2,13 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nebula/Pages/AddSingleUser.dart';
 import 'package:nebula/Pages/AddUsers.dart';
 import 'package:nebula/Pages/GroupInChats.dart';
 import 'package:nebula/Pages/LoginPage.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:nebula/Pages/ChatPage.dart';
+import 'package:nebula/Pages/MainPage.dart';
 import 'package:nebula/Pages/InChatPage.dart';
-import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:dynamic_themes/dynamic_themes.dart';
+import 'package:nebula/Pages/PesonalChat.dart';
 
 void main() async{
  WidgetsFlutterBinding.ensureInitialized();
@@ -51,11 +53,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new DynamicTheme(
-      defaultBrightness: light.brightness,
-      data: (brightness) => ThemeData(
-      brightness: brightness
-    ) ,
-    themedWidgetBuilder: (context,theme) =>
+      themeCollection:ThemeCollection(
+          themes:{
+        0:light,
+        1:dark
+      },
+        fallbackTheme: light
+      ),
+    builder: (context,theme) =>
       new MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Nebula',
@@ -67,7 +72,9 @@ class MyApp extends StatelessWidget {
           'ChatPage':(context) => Chats(),
           'InchatPage':(context) => InChat(),
           'AddUserPage':(context) => AddUser(),
-          "GroupInChat":(context) => GroupInChat()
+          "PersonnelChat":(context) =>PersonalChat(),
+          "GroupInChat":(context) => GroupInChat(),
+          "AddSingleUser":(context) => AddSingleUser()
         },
       ),
      );

@@ -38,23 +38,21 @@ class _InChatState extends State<InChat> {
     _controller2 = ScrollController();
     database.collection("Chats").get().then((value) {
       var usersinChat = value.docs.map((e) => e.id).toList();
-      print(usersinChat);
       docu = usersinChat.singleWhere((element) => ((element == auth.currentUser.uid.toString() + SecondUserId) || (element == SecondUserId + auth.currentUser.uid.toString())),orElse: ()
         => auth.currentUser.uid.toString() + SecondUserId
       );
 
     }).then((value) {
       // ignore: unrelated_type_equality_checks
-      if(database.collection("Chats").doc(docu).collection("Messages").snapshots().isEmpty == true){
-        database.collection("Chats").doc(docu).collection("Messages").add({
-          "from":auth.currentUser.uid.toString(),
-          "message": "hi",
-          "timestamp" : FieldValue.serverTimestamp()
-        });
-
-      }
+      // if(database.collection("Chats").doc(docu).collection("Messages").snapshots().isEmpty == true){
+      //   database.collection("Chats").doc(docu).collection("Messages").add({
+      //     "from":auth.currentUser.uid.toString(),
+      //     "message": "hi",
+      //     "timestamp" : FieldValue.serverTimestamp()
+      //   });
+      //
+      // }
       messages = database.collection("Chats").doc(docu).collection("Messages").orderBy("timestamp").snapshots();
-      print("_________________$docu");
     });
 
   }
@@ -96,7 +94,6 @@ class _InChatState extends State<InChat> {
                         if (!snapshot.hasData) return SizedBox();
                         else {
                           if (snapshot.data.docs[index]["from"] == SecondUserId){
-                            print("Second ======> $SecondUserId");
                             if(_keyboardIsVisible()){
                               SchedulerBinding.instance.addPostFrameCallback((timeStamp) {_controller2.animateTo(_controller2.position.maxScrollExtent,duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn ); });
                             }
@@ -104,7 +101,6 @@ class _InChatState extends State<InChat> {
                                 text: snapshot.data.docs[index]["message"].toString());
                           }
                           else{
-                            print("First ======> ${auth.currentUser.uid}");
                             return SendContainer(
                               text: snapshot.data.docs[index]["message"].toString(), status: "seen",);
                           }
@@ -174,7 +170,6 @@ class _InChatState extends State<InChat> {
 
                       child: InkWell(
                         onTap: () {
-                          print(FieldValue.serverTimestamp().toString());
                           database.collection("Chats").doc(docu).collection("Messages").add(
                               {
                                 "from":auth.currentUser.uid.toString(),
@@ -183,7 +178,8 @@ class _InChatState extends State<InChat> {
 
                               });
                           database.collection("Chats").doc(docu).set({
-                            "users" : docu,
+                            "users" : [auth.currentUser.uid,SecondUserId],
+                            "names" : [auth.currentUser.displayName,SeconduserName],
                             "lastMessage" : controller2.text,
                             "type": "Personnel"
                           },);
