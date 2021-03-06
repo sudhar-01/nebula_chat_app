@@ -70,7 +70,9 @@ class _GroupInChatState extends State<GroupInChat> {
                                     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {_controller3.animateTo(_controller3.position.maxScrollExtent,duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn ); });
                                   }
                                   return ReceiveContainer(
-                                      text: snapshot.data.docs[index]["message"].toString());
+                                      text: snapshot.data.docs[index]["message"].toString(),
+                                    fromName:snapshot.data.docs[index]["fromName"].toString()
+                                  );
                                 }
                                 else{
                                   return SendContainer(
@@ -145,6 +147,7 @@ class _GroupInChatState extends State<GroupInChat> {
                           database.collection("GroupChats").doc(nameOfGroup).collection("Messages").add(
                               {
                                 "from":auth.currentUser.uid.toString(),
+                                "fromName":auth.currentUser.displayName.toString(),
                                 "message": _messageController.text,
                                 "timestamp" : FieldValue.serverTimestamp()
 
@@ -191,7 +194,8 @@ class _GroupInChatState extends State<GroupInChat> {
 
 class ReceiveContainer extends StatelessWidget {
   final String text;
-  const ReceiveContainer({Key key, this.text}) : super(key: key);
+  final String fromName;
+  const ReceiveContainer({Key key, this.text,this.fromName}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -202,27 +206,43 @@ class ReceiveContainer extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02,horizontal:MediaQuery.of(context).size.width*0.05 ),
-        child: Container(
-          constraints: BoxConstraints(
-            minWidth: MediaQuery.of(context).size.width*0.1,
-            maxWidth: MediaQuery.of(context).size.width*0.5,
-            minHeight: MediaQuery.of(context).size.height*0.06,
-          ),
-          decoration: BoxDecoration(
-              color:Theme.of(context).cardColor,
-              borderRadius: BorderRadius.only(bottomRight:Radius.circular(20.0),topRight: Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
-              boxShadow: [BoxShadow(color: Colors.black26,spreadRadius: 1.0,blurRadius: 2.0,offset: Offset(2.0,3.0))]
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              constraints: BoxConstraints(
+                minWidth: MediaQuery.of(context).size.width*0.1,
+                maxWidth: MediaQuery.of(context).size.width*0.5,
+                minHeight: MediaQuery.of(context).size.height*0.06,
+              ),
+              decoration: BoxDecoration(
+                  color:Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.only(bottomRight:Radius.circular(20.0),topRight: Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
+                  boxShadow: [BoxShadow(color: Colors.black26,spreadRadius: 1.0,blurRadius: 2.0,offset: Offset(2.0,3.0))]
 
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.4*0.1),
-            child: SelectableText(text,style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: GFS(19, context),
-                color:Theme.of(context).textTheme.headline1.color
-            ),),
-          ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.4*0.1),
+                child: SelectableText(text,style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: GFS(19, context),
+                    color:Theme.of(context).textTheme.headline1.color
+                ),),
+              ),
 
+            ),
+            Padding(
+              padding: EdgeInsets.only(left:MediaQuery.of(context).size.width*0.02 ),
+              child: Container(
+                child: SelectableText(fromName,style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: GFS(12, context),
+                    color:Theme.of(context).textTheme.headline1.color
+                ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

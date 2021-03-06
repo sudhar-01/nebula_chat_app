@@ -52,7 +52,11 @@ class _InChatState extends State<InChat> {
       //   });
       //
       // }
-      messages = database.collection("Chats").doc(docu).collection("Messages").orderBy("timestamp").snapshots();
+      setState(() {
+        messages = database.collection("Chats").doc(docu).collection("Messages").orderBy("timestamp").snapshots();
+
+      });
+
     });
 
   }
