@@ -11,6 +11,7 @@ import 'package:nebula/Pages/MainPage.dart';
 import 'package:nebula/Pages/InChatPage.dart';
 import 'package:dynamic_themes/dynamic_themes.dart';
 import 'package:nebula/Pages/PesonalChat.dart';
+import 'package:nebula/Pages/Profile.dart';
 
 void main() async{
  WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +40,7 @@ ThemeData themeState = light;
 ThemeData dark = ThemeData.dark().copyWith(
   primaryColor: Color(0xFF464646),
   primaryColorLight: Color(0xFF000000),
+  secondaryHeaderColor:Color(0xFF364AFF),
   primaryColorDark: Color(0xFF28295D),
   cardColor: Color(0xFF4F4F4F),
   accentColor: Colors.black,
@@ -74,7 +76,8 @@ class MyApp extends StatelessWidget {
           'AddUserPage':(context) => AddUser(),
           "PersonnelChat":(context) =>PersonalChat(),
           "GroupInChat":(context) => GroupInChat(),
-          "AddSingleUser":(context) => AddSingleUser()
+          "AddSingleUser":(context) => AddSingleUser(),
+          "ProfilePage":(context) => Profile()
         },
       ),
      );

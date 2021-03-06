@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:nebula/backend/FireBase.dart';
 import 'package:nebula/backend/pics.dart';
 import 'package:nebula/main.dart';
@@ -32,15 +34,18 @@ class _GroupInChatState extends State<GroupInChat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         leading: IconButton(icon: Icon(Icons.arrow_back_ios_sharp,color: Colors.white,), onPressed: () => Navigator.pop(context)),
-        title: Text(nameOfGroup,style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: GFS(25, context),
-            color: Colors.white
-        ),),
+        title: Text(nameOfGroup,
+            style: GoogleFonts.openSans(textStyle:TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: GFS(26, context),
+                color: Colors.white
+            ),)
+        ),
         actions: [
-          IconButton(icon: Icon(Icons.search,color: Colors.white,), onPressed: null)
+          IconButton(icon: FaIcon(FontAwesomeIcons.ellipsisV,color: Colors.white,size: GFS(17, context),), onPressed: null)
         ],
       ),
       body: Container(

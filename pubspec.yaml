@@ -30,6 +30,8 @@ dependencies:
   flutter_svg: ^0.19.3
   date_time_format: ^1.1.1+1
   firebase_messaging:
+  google_fonts:
+  font_awesome_flutter:
 
 
   # The following adds the Cupertino Icons font to your application.

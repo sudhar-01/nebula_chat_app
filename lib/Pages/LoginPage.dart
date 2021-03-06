@@ -61,7 +61,7 @@ class _LoginState extends State<Login> {
               width: MediaQuery.of(context).size.width,
               child: SvgPicture.asset(firstpageBG,fit: BoxFit.fill,)//Image.asset("assets/BG.svg",fit: BoxFit.cover,),
 
-              
+
             ),
             Container(
               height: MediaQuery.of(context).size.height,
@@ -213,13 +213,23 @@ class _LoginState extends State<Login> {
 
                         }
                         else
-                          loginKey.currentState.showSnackBar(snackBar);
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       });
                       if(auth.currentUser == null){
                           auth.signInWithEmailAndPassword(email: username, password: password).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => Chats()))).catchError((onError){
                             auth.createUserWithEmailAndPassword(email: username, password: password).then((value) => auth.currentUser.sendEmailVerification()).
                             catchError((onError){
-                              loginKey.currentState.showSnackBar(SnackBar(content: Text(onError.toString()),duration: Duration(seconds: 2),backgroundColor: Colors.red,));
+                            auth.currentUser.reauthenticateWithCredential(
+                                EmailAuthProvider.credential(
+                                  email: username,
+                                  password: password,
+                                ),
+                              ).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => Chats()))).catchError((onError) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(onError.toString()),
+                                    duration: Duration(seconds: 2),
+                                    backgroundColor: Colors.red,));
+                            });
                             }).then((value) => auth.currentUser.sendEmailVerification());
                           });
                       }

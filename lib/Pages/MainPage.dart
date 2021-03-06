@@ -1,6 +1,7 @@
 import 'package:dynamic_themes/dynamic_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:nebula/Pages/GoupChatPage.dart';
 import 'package:nebula/Pages/PesonalChat.dart';
 import 'package:nebula/main.dart';
@@ -98,125 +99,110 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin {
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.04),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.07,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width *
-                                    0.9 *
-                                    0.2,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.03,
-                                child: SvgPicture.asset(
-                                  lightbulbIcon,
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .headline1
-                                      .color,
-                                  fit: BoxFit.contain,
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.04),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width *
+                                      0.9 *
+                                      0.2,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.03,
+                                  child: SvgPicture.asset(
+                                    lightbulbIcon,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .headline1
+                                        .color,
+                                    fit: BoxFit.contain,
+                                  ),
                                 ),
-                              ),
-                              onTap: () {
-                                  changeBrightness();
-                              }),
-                          Container(
-                            width:
-                                MediaQuery.of(context).size.width * 0.9 * 0.5,
-                            height: MediaQuery.of(context).size.height * 0.07,
-                            alignment: Alignment.center,
-                            child: Text(
-                              "nebuLa",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: GFS(35, context),
-                                  shadows: [
-                                    Shadow(
-                                        offset: Offset(3.0, 4.0),
-                                        blurRadius: 2.0)
-                                  ],
-                                  color: Colors.white),
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9 * 0.2,
-                            height: MediaQuery.of(context).size.height * 0.07,
-                            child: IconButton(
-                                icon: Icon(
-                                  Icons.settings,
-                                  color: Colors.white,
-                                ),
-                                onPressed: null),
-                          )
-                        ],
+                                onTap: () {
+                                    changeBrightness();
+                                }),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.9 * 0.2,
+                              height: MediaQuery.of(context).size.height * 0.07,
+                              child: IconButton(
+                                  icon: Icon(
+                                    Icons.settings,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed:() => Navigator.pushNamed(context, "ProfilePage")),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),        ///Nebula title
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20.0),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black26,
-                              spreadRadius: 1.0,
-                              blurRadius: 4.0)
-                        ]),
-                  ),      ///Search Bar
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    child: TabBar(
-                        indicatorColor: Colors.transparent,
-                        controller: tabController,
-                        tabs: [
-                          Text(
-                            "Chat",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: GFS(17, context),
-                                color: Colors.white),
-                          ),
-                          Text(
-                            "Group",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: GFS(17, context),
-                                color: Colors.white),
-                          ),
-                        ]),
-                  ),      ///Section Bar
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.75,
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).accentColor,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(40.0),
-                            topRight: Radius.circular(40.0)),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black26,
-                              spreadRadius: 1.0,
-                              blurRadius: 4.0)
-                        ]),
-                    child: TabBarView(
-                      controller: tabController,
-                      children: [
-                        PersonalChat(),///Personnel Chat
-                        GroupChat()///Group chat
-                      ],
-                    ),
-                  )      ///Chats Block
+                  ),
+                  Expanded(
+                    flex: 7,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).accentColor,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(40.0),
+                              topRight: Radius.circular(40.0)),
+                        ),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                child: TabBar(
+                                    indicatorColor: Theme.of(context).secondaryHeaderColor,
+                                    labelColor: Theme.of(context).secondaryHeaderColor,
+                                    unselectedLabelColor:Theme.of(context).textTheme.headline1.color ,
+                                    controller: tabController,
+                                    tabs: [
+                                      Text(
+                                        "Chat",
+                                        style: GoogleFonts.ubuntu(textStyle: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: GFS(21, context)
+                                          ),
+                                        )
+                                      ),
+                                      Text(
+                                        "Group",
+                                          style: GoogleFonts.ubuntu(textStyle: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: GFS(21, context)
+                                          ),
+                                          )
+                                      ),
+                                    ]),
+                              ),
+                            ),      ///Section Bar
+                            Expanded(
+                              flex: 9,
+                              child: Container(
+
+                                child: TabBarView(
+                                  controller: tabController,
+                                  children: [
+                                    PersonalChat(),///Personnel Chat
+                                    GroupChat()///Group chat
+                                  ],
+                                ),
+                              ),
+                            )
+
+                          ],
+                        ),
+                      )),///Nebula title
+                    ///Chats Block
                 ],
               ),
             )  ///Front

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:nebula/Pages/InChatPage.dart';
 import 'package:nebula/backend/FireBase.dart';
 import 'package:nebula/main.dart';
@@ -54,48 +55,30 @@ class _PersonalChatState extends State<PersonalChat> {
                                   0.9,
                               decoration: BoxDecoration(
                                   color: Theme.of(context).cardColor,
-                                  // gradient: LinearGradient(begin: Alignment.centerLeft,end: Alignment.centerRight,colors: [Color(0xFFD5DAFF),Color(0xFFE0ECFF),Color(0xFFD8DEFF),Color(0xFFE7EDFF),Color(0xFFD4C9FF),]),
+                                 // gradient:LinearGradient(begin: Alignment.centerLeft,end: Alignment.centerRight,colors: [Color(0xFFD5DAFF),Color(0xFFE0ECFF),Color(0xFFD8DEFF),Color(0xFFE7EDFF),Color(0xFFD4C9FF),]),
                                   borderRadius:
                                   BorderRadius.circular(
-                                      20.0),
+                                      10.0),
                                   boxShadow: [
                                     BoxShadow(
                                         color: Colors
                                             .black26,
-                                        spreadRadius: 1.0,
-                                        blurRadius: 4.0,
+                                        spreadRadius: 2.0,
+                                        blurRadius: 6.0,
                                         offset:
-                                        Offset(2.0, 4.0))
+                                        Offset(4.0, 7.0))
                                   ]),
                               child: Row(
                                 mainAxisAlignment:
                                 MainAxisAlignment
-                                    .spaceEvenly,
+                                    .spaceAround,
                                 children: [
-                                  Container(
-                                    height:
-                                    MediaQuery
+                                  CircleAvatar(backgroundColor: Colors.black26,radius:MediaQuery
                                         .of(context)
                                         .size
                                         .height *
                                         0.11 *
-                                        0.75,
-                                    width:
-                                    MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width *
-                                        0.8 *
-                                        0.2,
-                                    decoration: BoxDecoration(
-                                      color: Colors.black26,
-                                      borderRadius:
-                                      BorderRadius
-                                          .circular(10.0),
-                                    ),
-                                  ),
-
-                                  ///picture
+                                        0.4,),
                                   Container(
                                     height:
                                     MediaQuery
@@ -110,7 +93,7 @@ class _PersonalChatState extends State<PersonalChat> {
                                         .size
                                         .width *
                                         0.8 *
-                                        0.65,
+                                        0.8,
                                     child: Column(
                                       mainAxisAlignment:
                                       MainAxisAlignment
@@ -124,12 +107,10 @@ class _PersonalChatState extends State<PersonalChat> {
                                             _personalElementList1[
                                             index]
                                             ["names"].where((value) =>!(value.contains(auth.currentUser.displayName) as bool)).toString().replaceAll("(", "").replaceAll(")", ""),
-                                            style: TextStyle(
+                                            style: GoogleFonts.openSans(textStyle:TextStyle(
                                                 fontWeight:
-                                                FontWeight
-                                                    .w600,
-                                                fontSize: GFS(
-                                                    20,
+                                                FontWeight.w600,
+                                                fontSize: GFS(23,
                                                     context),
                                                 color: Theme
                                                     .of(
@@ -138,6 +119,7 @@ class _PersonalChatState extends State<PersonalChat> {
                                                     .headline1
                                                     .color),
                                           ),
+                                          )
                                         ),
 
                                         ///name
