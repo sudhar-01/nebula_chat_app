@@ -54,19 +54,35 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin {
     });
 
     chatPage = database.collection("Chats").snapshots();
-    if(auth.currentUser.displayName == null){
-      auth.currentUser.updateProfile(displayName: name);
-    }
+
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if(auth.currentUser.displayName == "" || auth.currentUser.displayName == null){
+        print("display name is null");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Your name is null...Please update or resubmit your name in Profile page"),duration: Duration(seconds: 4),backgroundColor: Colors.red,));
+      }
+      database.collection("Users").doc(auth.currentUser.uid).get().then((value) {
+        if(value.data()["Name"].toString() == null){
+          print("username is null");
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Your name is null...Please update or resubmit your name in Profile page"),duration: Duration(seconds: 4),backgroundColor: Colors.red,));
+
+        }
+      });
+
+    });
+
   }
   @override
   void dispose() {
     super.dispose();
     tabController.dispose();
   }
+   
+  
 
   @override
   Widget build(BuildContext context) {
+    print(auth.currentUser);
     return Scaffold(
       floatingActionButton: (tabController.index == 0)?
       FloatingActionButton(

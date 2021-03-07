@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:nebula/Pages/MainPage.dart';
 import 'package:nebula/backend/pics.dart';
 import 'package:nebula/backend/FireBase.dart';
 import 'package:nebula/main.dart';
@@ -17,6 +17,7 @@ class _LoginState extends State<Login> {
   TextEditingController _emailController;
   TextEditingController _passwordController;
   TextEditingController _nameController;
+  ValueNotifier<bool> _emailVerified;
   @override
   void initState() {
     super.initState();
@@ -24,6 +25,16 @@ class _LoginState extends State<Login> {
     _passwordController = TextEditingController(text: '');
     _nameController = TextEditingController(text:  '');
     iter = 0;
+    // if(auth.currentUser!=null){
+    // _emailVerified.value = auth.currentUser.emailVerified;
+    //   _emailVerified.addListener(() {
+    //     setState(() {
+    //     print("email verified");
+    //   });});
+
+    //}
+
+
 
 
   }
@@ -33,7 +44,7 @@ class _LoginState extends State<Login> {
     if(FirebaseAuth.instance.currentUser != null){
       FirebaseAuth.instance.currentUser.reload();
       if(iter>0 && FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser.emailVerified == false ) {
-        setState(() {
+       WidgetsBinding.instance.addPostFrameCallback((_) {
          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(
               "Please verify your email.Please click here to verify"),
               backgroundColor: Colors.red,
@@ -149,7 +160,6 @@ class _LoginState extends State<Login> {
                       onSubmitted: (text) {
                         setState(() {
                           _nameController.text = text;
-                          name = text;
 
 
                         });
@@ -207,29 +217,40 @@ class _LoginState extends State<Login> {
                             if (_emailController.text.isNotEmpty &&
                                 _passwordController.text.isNotEmpty &&
                                 _nameController.text.isNotEmpty) {
-                                name = _nameController.text;
-                                username = _emailController.text;
-                                password = _passwordController.text;
-
-                                auth.currentUser.reauthenticateWithCredential(
-                                    EmailAuthProvider.credential(
-                                        email: _emailController.text,
-                                      password: _passwordController.text
-                                      )).then((value) {
-                                      Navigator.pushNamed(context, "ChatPage");
-                                    }).catchError((onErr) {
-                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(onErr) ,duration: Duration(seconds: 2),
-                                        backgroundColor: Colors.red,));
-                                });
-
+                              print(_emailController.text);
+                              print(_passwordController.text);
+                              print(_nameController.text);
+                              username = _emailController.text;
+                              password = _passwordController.text;
+                              var credential = EmailAuthProvider.credential(
+                                  email: _emailController.text,
+                                  password: _passwordController.text
+                              );
+                              print("__$credential");
+                              auth.signInWithCredential(
+                                  credential)
+                                  .catchError((onError) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar
+                                      (content: Text(onError),
+                                      duration: Duration(seconds: 2),
+                                      backgroundColor: Colors.red,));
+                              })
+                                  .then((value) {
+                                Navigator.pushNamed(context, "ChatPage");
+                              }).catchError((onErr) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text("Wrong credentials"),
+                                      duration: Duration(seconds: 2),
+                                      backgroundColor: Colors.red,));
+                              });
                             }
-                          else
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(
-                                    "Please fill all the fields"),
-                                  duration: Duration(seconds: 2),
-                                  backgroundColor: Colors.red,));
-
+                            else
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(
+                                      "Please fill all the fields"),
+                                    duration: Duration(seconds: 2),
+                                    backgroundColor: Colors.red,));
                         },
                         child: Container(
                           height: MediaQuery.of(context).size.height*0.07,
@@ -259,7 +280,6 @@ class _LoginState extends State<Login> {
                                 _nameController.text.isNotEmpty) {
                               username = _emailController.text;
                               password = _passwordController.text;
-                              name = _nameController.text;
                               auth.createUserWithEmailAndPassword(
                                   email: _emailController.text,
                                   password: _passwordController.text).then((
@@ -270,7 +290,8 @@ class _LoginState extends State<Login> {
                                       SnackBar(content: Text(
                                           "Please check your email and verify"),
                                         duration: Duration(seconds: 2),
-                                        backgroundColor: Colors.green,));
+                                        backgroundColor: Colors.green,)
+                                  );
                                 }).catchError((onError1) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(content: Text(onError1),
@@ -279,7 +300,7 @@ class _LoginState extends State<Login> {
                                 });
                               }).catchError((onError2) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(onError2),
+                                    SnackBar(content: Text("$onError2"),
                                       duration: Duration(seconds: 2),
                                       backgroundColor: Colors.red,));
                               });
@@ -291,7 +312,8 @@ class _LoginState extends State<Login> {
                                     duration: Duration(seconds: 2),
                                     backgroundColor: Colors.red,));
                           }
-                          if(auth.currentUser.emailVerified == true) {
+                          else if (auth.currentUser.emailVerified == true) {
+                            auth.currentUser.updateProfile(displayName: _nameController.text);
                             Navigator.pushNamed(context, "ChatPage");
                           }
 

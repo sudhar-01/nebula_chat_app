@@ -9,7 +9,7 @@ class AddUser extends StatefulWidget {
 
 class _AddUserState extends State<AddUser> {
   TextEditingController _groupName;
-  GlobalKey<ScaffoldState> _enterGroupName = GlobalKey();
+ // GlobalKey<ScaffoldSta= GlobalKey();
   List<Map<String,dynamic>> listValue;
   var addUserList;
   @override
@@ -18,11 +18,12 @@ class _AddUserState extends State<AddUser> {
     database.collection("Users").snapshots()
     ..listen((event) {
       setState(() {
-        listValue = List.generate(event.docs.length, (index) => {
+        listValue = List.generate(event.docs.length, (index) =>{
           "Name" :event.docs[index]["Name"],
           "Id": event.docs[index]["Id"],
           "isSelected" : false
         });
+        listValue.removeWhere((element) => element["Id"] == auth.currentUser.uid);
       });
     });
     super.initState();
@@ -91,14 +92,14 @@ class _AddUserState extends State<AddUser> {
                         builder: (context,snapshots) {
                         if(listValue.isEmpty && !snapshots.hasData) return Center(child: CircularProgressIndicator());
                           else if(listValue.isNotEmpty && snapshots.hasData) {
-                            return ListView.builder(
-                              itemCount: snapshots.data.docs.length,
+                          var _personalElementList3 = snapshots.data.docs.where((value) => !(value.data()["Id"].contains(auth.currentUser.uid.toString()) as bool)).toList();
+                          return ListView.builder(
+                              itemCount:_personalElementList3.length,
                               itemBuilder: (context, int index) =>
                                   CheckboxListTile(
                                     activeColor: Colors.green,
                                     value: listValue[index]["isSelected"],
-                                    title: Text(snapshots.data
-                                        .docs[index]['Name'], style: TextStyle(
+                                    title: Text(_personalElementList3[index]['Name'], style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: GFS(20, context),
                                         color:Theme.of(context).textTheme.headline1.color,
@@ -122,25 +123,36 @@ class _AddUserState extends State<AddUser> {
                 flex: 1,
                   child: InkWell(
                     onTap: () {
-                      if(_groupName.text.isNotEmpty){
+                      if(_groupName.text.isNotEmpty && listValue.length>=2){
+                        listValue.add({
+                          "Name" :auth.currentUser.displayName,
+                          "Id":auth.currentUser.uid,
+                          "isSelected" : true
+
+                        });
                         database.collection("GroupChats").doc(_groupName.text).set({
                           "Name": _groupName.text,
                           "lastMessage":" ",
                           "type":"Group",
                           "users": listValue.where((element) => element["isSelected"] == true).map((e) => e["Id"]).toList()
-                        }).catchError((onError) => Scaffold.of(context).showSnackBar(SnackBar(backgroundColor:Colors.red,duration: Duration(seconds: 1),content: Text(onError.toString()))));
+                        }).catchError((onError) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor:Colors.red,duration: Duration(seconds: 1),content: Text(onError.toString()))));
                         database.collection("GroupChats").doc(_groupName.text).collection("Messages").add(
                             {
                               "from": auth.currentUser.uid.toString(),
+                              "fromName":auth.currentUser.displayName,
                               "message": "hi",
                               "timestamp" : FieldValue.serverTimestamp()
                             });
                         _groupName.text = "";
                         Navigator.pop(context);
+                      }
+                      else if(listValue.length<2){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor:Colors.red,duration: Duration(seconds: 1),content: Text("There must be more than 2 members in a group")));
+
 
                       }
                       else{
-                       Scaffold.of(context).showSnackBar(SnackBar(key:_enterGroupName,backgroundColor:Colors.red,duration: Duration(seconds: 1),content: Text("Please enter group name")));
+                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor:Colors.red,duration: Duration(seconds: 1),content: Text("Please enter group name")));
                       }
 
                   

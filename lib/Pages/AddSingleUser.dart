@@ -36,6 +36,7 @@ class _AddSingleUserState extends State<AddSingleUser> {
                     child: CircularProgressIndicator());
               else{
                 var _personalElementList2 = snapshots.data.docs.where((value) => !(value.data()["Id"].contains(auth.currentUser.uid.toString()) as bool)).toList();
+                //var _personalElementList2 = snapshots.data.docs.map((e) => e["Id"]!=auth.currentUser.uid).toList();
                 return ListView.builder(
                     itemBuilder: (context, int index) {
                         return Padding(
@@ -52,183 +53,127 @@ class _AddSingleUserState extends State<AddSingleUser> {
                                                   secondUserId: _personalElementList2[index]["Id"].toString(),
                                                   SeconduserName:_personalElementList2[index]["Name"].toString(),
                                                 ))),
-                                child: Container(
-                                  height: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height *
-                                      0.12,
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width *
-                                      0.9,
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context).cardColor,
-                                      // gradient: LinearGradient(begin: Alignment.centerLeft,end: Alignment.centerRight,colors: [Color(0xFFD5DAFF),Color(0xFFE0ECFF),Color(0xFFD8DEFF),Color(0xFFE7EDFF),Color(0xFFD4C9FF),]),
-                                      borderRadius:
-                                      BorderRadius.circular(
-                                          20.0),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors
-                                                .black26,
-                                            spreadRadius: 1.0,
-                                            blurRadius: 4.0,
-                                            offset:
-                                            Offset(2.0, 4.0))
-                                      ]),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment
-                                        .spaceEvenly,
-                                    children: [
-                                      Container(
-                                        height:
-                                        MediaQuery
-                                            .of(context)
-                                            .size
-                                            .height *
-                                            0.11 *
-                                            0.75,
-                                        width:
-                                        MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width *
-                                            0.8 *
-                                            0.2,
-                                        decoration: BoxDecoration(
-                                          color: Colors.black26,
-                                          borderRadius:
-                                          BorderRadius
-                                              .circular(10.0),
-                                        ),
-                                      ),
-
-                                      ///picture
-                                      Container(
-                                        height:
-                                        MediaQuery
-                                            .of(context)
-                                            .size
-                                            .height *
-                                            0.11 *
-                                            0.9,
-                                        width:
-                                        MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width *
-                                            0.8 *
-                                            0.65,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .spaceBetween,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment
-                                              .start,
-                                          children: [
-                                            Container(
-                                              child: Text(
-                                               _personalElementList2[
-                                                index]
-                                                ["Name"]
-                                                    .toString(),
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w600,
-                                                    fontSize: GFS(
-                                                        20,
-                                                        context),
-                                                    color: Theme
-                                                        .of(
-                                                        context)
-                                                        .textTheme
-                                                        .headline1
-                                                        .color),
-                                              ),
+                                child:ListTile(
+                                  leading: CircleAvatar(backgroundColor: Colors.grey,radius: MediaQuery.of(context).size.width*0.1,),
+                                  title: Text(
+                                             _personalElementList2[
+                                              index]
+                                              ["Name"]
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  fontWeight:
+                                                  FontWeight
+                                                      .w600,
+                                                  fontSize: GFS(
+                                                      20,
+                                                      context),
+                                                  color: Theme
+                                                      .of(
+                                                      context)
+                                                      .textTheme
+                                                      .headline1
+                                                      .color),
                                             ),
+                                          ),
+                                )
+                                // child: Container(
+                                //   height: MediaQuery
+                                //       .of(context)
+                                //       .size
+                                //       .height *
+                                //       0.07,
+                                //   width: MediaQuery
+                                //       .of(context)
+                                //       .size
+                                //       .width *
+                                //       0.9,
+                                //   decoration: BoxDecoration(
+                                //       color: Theme.of(context).cardColor,
+                                //       // gradient: LinearGradient(begin: Alignment.centerLeft,end: Alignment.centerRight,colors: [Color(0xFFD5DAFF),Color(0xFFE0ECFF),Color(0xFFD8DEFF),Color(0xFFE7EDFF),Color(0xFFD4C9FF),]),
+                                //       borderRadius:
+                                //       BorderRadius.circular(
+                                //           5.0),
+                                //       boxShadow: [
+                                //         BoxShadow(
+                                //             color: Colors
+                                //                 .black26,
+                                //             spreadRadius: 1.0,
+                                //             blurRadius: 4.0,
+                                //             offset:
+                                //             Offset(2.0, 4.0))
+                                //       ]),
+                                //   child: Row(
+                                //     mainAxisAlignment:
+                                //     MainAxisAlignment
+                                //         .spaceEvenly,
+                                //     children: [
+                                //       Container(
+                                //         height:
+                                //         MediaQuery
+                                //             .of(context)
+                                //             .size
+                                //             .height *
+                                //             0.07 *
+                                //             0.75,
+                                //         width:
+                                //         MediaQuery
+                                //             .of(context)
+                                //             .size
+                                //             .width *
+                                //             0.8 *
+                                //             0.15,
+                                //         decoration: BoxDecoration(
+                                //           color: Colors.black26,
+                                //           borderRadius:
+                                //           BorderRadius
+                                //               .circular(5.0),
+                                //         ),
+                                //       ),
+                                //
+                                //       ///picture
+                                //       Container(
+                                //         height:
+                                //         MediaQuery
+                                //             .of(context)
+                                //             .size
+                                //             .height *
+                                //             0.11 *
+                                //             0.9,
+                                //         width:
+                                //         MediaQuery
+                                //             .of(context)
+                                //             .size
+                                //             .width *
+                                //             0.8 *
+                                //             0.65,
+                                //         child: Container(
+                                //           child: Text(
+                                //            _personalElementList2[
+                                //             index]
+                                //             ["Name"]
+                                //                 .toString(),
+                                //             style: TextStyle(
+                                //                 fontWeight:
+                                //                 FontWeight
+                                //                     .w600,
+                                //                 fontSize: GFS(
+                                //                     20,
+                                //                     context),
+                                //                 color: Theme
+                                //                     .of(
+                                //                     context)
+                                //                     .textTheme
+                                //                     .headline1
+                                //                     .color),
+                                //           ),
+                                //         ),
+                                //       )
+                                //
+                                //       ///Details
+                                //     ],
+                                //   ),
+                                // ),
 
-                                            ///name
-                                            Container(
-                                              child: Text(
-                                                ",,,",
-                                                // fetchLastMessage(auth.currentUser.uid, snapshots
-                                                //     .data
-                                                //     .docs[
-                                                // index]
-                                                // ["Id"]
-                                                //     .toString() ),
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w600,
-                                                    fontSize: GFS(
-                                                        14,
-                                                        context),
-                                                    color: Theme
-                                                        .of(
-                                                        context)
-                                                        .textTheme
-                                                        .headline1
-                                                        .color),
-                                              ),
-                                            ),
-
-                                            ///Chat
-                                            Container(
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "online",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .w600,
-                                                        fontSize: GFS(
-                                                            14,
-                                                            context),
-                                                        color: Color(
-                                                            0xFF00C313)),
-                                                  ),
-                                                  Container(
-                                                    height: MediaQuery
-                                                        .of(
-                                                        context)
-                                                        .size
-                                                        .height *
-                                                        0.11 *
-                                                        0.9 *
-                                                        0.2,
-                                                    width: MediaQuery
-                                                        .of(
-                                                        context)
-                                                        .size
-                                                        .width *
-                                                        0.8 *
-                                                        0.65 *
-                                                        0.15,
-                                                    color: Color(
-                                                        0xFF0900FF),
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      )
-
-                                      ///Details
-                                    ],
-                                  ),
-                                ),
-                              ),
                             ),
                           );
                     },

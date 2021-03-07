@@ -21,13 +21,11 @@ class _GroupChatState extends State<GroupChat> {
       child: StreamBuilder(
           stream: _groupChats,
           builder: (context, AsyncSnapshot snapshots) {
-
             if (!snapshots.hasData)
               return Center(
                   child: CircularProgressIndicator());
             else {
               var elementList = snapshots.data.docs.where((value) => value.data()["users"].contains(auth.currentUser.uid.toString()) as bool).toList();
-           //   debugPrint("${elementList}");
               return ListView.separated(
                     itemBuilder: (context, int index) {
                       return Center(

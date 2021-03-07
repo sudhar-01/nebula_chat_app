@@ -98,5 +98,4 @@ double GFS(double i,BuildContext context){
 
 String username = '';
 String password = '';
-String name = '';
 
