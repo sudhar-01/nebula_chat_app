@@ -14,14 +14,13 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final loginKey = GlobalKey<ScaffoldState>();
   int iter;
-  final SnackBar snackBar = SnackBar(content: Text("Invalid username or password"),duration: Duration(seconds: 2),backgroundColor: Colors.red,);
-  TextEditingController _usernameController;
+  TextEditingController _emailController;
   TextEditingController _passwordController;
   TextEditingController _nameController;
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController(text: '');
+    _emailController = TextEditingController(text: '');
     _passwordController = TextEditingController(text: '');
     _nameController = TextEditingController(text:  '');
     iter = 0;
@@ -35,7 +34,7 @@ class _LoginState extends State<Login> {
       FirebaseAuth.instance.currentUser.reload();
       if(iter>0 && FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser.emailVerified == false ) {
         setState(() {
-          loginKey.currentState.showSnackBar(SnackBar(content: Text(
+         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(
               "Please verify your email.Please click here to verify"),
               backgroundColor: Colors.red,
               action: SnackBarAction(label: 'verify',
@@ -88,7 +87,7 @@ class _LoginState extends State<Login> {
                       boxShadow: [BoxShadow(color: Colors.black54,spreadRadius: 1.0,blurRadius: 4.0,offset: Offset(2.0,4.0))]
                     ),
                     child: TextField(
-                      controller: _usernameController,
+                      controller: _emailController,
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -109,7 +108,7 @@ class _LoginState extends State<Login> {
                       ),
                       onSubmitted: (text) {
                         setState(() {
-                          _usernameController.text = text;
+                          _emailController.text = text;
 
 
                         });
@@ -200,75 +199,150 @@ class _LoginState extends State<Login> {
                     ),
                   ),   ///Password
                   SizedBox(height: MediaQuery.of(context).size.height*0.05,),
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        if (_usernameController.text.isNotEmpty &&
-                            _passwordController.text.isNotEmpty) {
-                          username = _usernameController.text;
-                          password = _passwordController.text;
-                          if(_nameController.text.isNotEmpty){
-                            name = _nameController.text;
-                          }
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                            if (_emailController.text.isNotEmpty &&
+                                _passwordController.text.isNotEmpty &&
+                                _nameController.text.isNotEmpty) {
+                                name = _nameController.text;
+                                username = _emailController.text;
+                                password = _passwordController.text;
 
-                        }
-                        else
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      });
-                      if(auth.currentUser == null){
-                          auth.signInWithEmailAndPassword(email: username, password: password).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => Chats()))).catchError((onError){
-                            auth.createUserWithEmailAndPassword(email: username, password: password).then((value) => auth.currentUser.sendEmailVerification()).
-                            catchError((onError){
-                            auth.currentUser.reauthenticateWithCredential(
-                                EmailAuthProvider.credential(
-                                  email: username,
-                                  password: password,
-                                ),
-                              ).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => Chats()))).catchError((onError) {
+                                auth.currentUser.reauthenticateWithCredential(
+                                    EmailAuthProvider.credential(
+                                        email: _emailController.text,
+                                      password: _passwordController.text
+                                      )).then((value) {
+                                      Navigator.pushNamed(context, "ChatPage");
+                                    }).catchError((onErr) {
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(onErr) ,duration: Duration(seconds: 2),
+                                        backgroundColor: Colors.red,));
+                                });
+
+                            }
+                          else
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(
+                                    "Please fill all the fields"),
+                                  duration: Duration(seconds: 2),
+                                  backgroundColor: Colors.red,));
+
+                        },
+                        child: Container(
+                          height: MediaQuery.of(context).size.height*0.07,
+                          width: MediaQuery.of(context).size.width*0.4,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.only(topLeft:Radius.circular(20.0),bottomRight: Radius.circular(20.0)),
+                              boxShadow: [BoxShadow(color: Colors.black54,spreadRadius: 1.0,blurRadius: 4.0,offset: Offset(2.0,4.0))]
+                          ),
+                          child: Center(
+                            child: Text("Login" ,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: GFS(20, context),
+                                fontWeight: FontWeight.w600
+                              ),
+                            ),
+                          ),
+
+                        ),
+                      ),  ///Login
+                      InkWell(
+                        onTap: () {
+                          if(auth.currentUser == null) {
+                            if (_emailController.text.isNotEmpty &&
+                                _passwordController.text.isNotEmpty &&
+                                _nameController.text.isNotEmpty) {
+                              username = _emailController.text;
+                              password = _passwordController.text;
+                              name = _nameController.text;
+                              auth.createUserWithEmailAndPassword(
+                                  email: _emailController.text,
+                                  password: _passwordController.text).then((
+                                  value) {
+                                auth.currentUser.sendEmailVerification()
+                                    .then((value) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(
+                                          "Please check your email and verify"),
+                                        duration: Duration(seconds: 2),
+                                        backgroundColor: Colors.green,));
+                                }).catchError((onError1) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(onError1),
+                                        duration: Duration(seconds: 2),
+                                        backgroundColor: Colors.red,));
+                                });
+                              }).catchError((onError2) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(onError2),
+                                      duration: Duration(seconds: 2),
+                                      backgroundColor: Colors.red,));
+                              });
+                            }
+                            else
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(onError.toString()),
+                                  SnackBar(content: Text(
+                                      "Please fill all the fields"),
                                     duration: Duration(seconds: 2),
                                     backgroundColor: Colors.red,));
-                            });
-                            }).then((value) => auth.currentUser.sendEmailVerification());
-                          });
-                      }
+                          }
+                          if(auth.currentUser.emailVerified == true) {
+                            Navigator.pushNamed(context, "ChatPage");
+                          }
 
+                            //
+                            //     auth.createUserWithEmailAndPassword(email: username, password: password).then((value) => auth.currentUser.sendEmailVerification());
+                            //         ScaffoldMessenger.of(context).showSnackBar(
+                            //             SnackBar(content: Text(onError.toString()),
+                            //               duration: Duration(seconds: 2),
+                            //               backgroundColor: Colors.red,));
+                            //     }).then((value) => auth.currentUser.sendEmailVerification());
+                            //
+                            // }
+                            //
+                            //
+                            //
+                            // else if(auth.currentUser.emailVerified == true){
+                            //   Navigator.push(context, MaterialPageRoute(builder: (context) => Chats()));
+                            // }
+                            //
+                            //
+                            //
+                            // else{
+                            //   auth.currentUser.updateProfile(displayName: name).then((value) => database.collection("Users").doc().update( {
+                            //     "Id":auth.currentUser.uid,
+                            //     "Name": name,
+                            //   }));
+                            //   Navigator.push(context, MaterialPageRoute(builder: (context) => Chats()));
+                            // }
 
-
-                      else if(auth.currentUser.emailVerified == true){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Chats()));
-                      }
-
-
-
-                      else{
-                        auth.currentUser.updateProfile(displayName: name).then((value) => database.collection("Users").doc().update( {
-                          "Id":auth.currentUser.uid,
-                          "Name": name,
-                        }));
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Chats()));
-                      }
-                    },
-                    child: Container(
-                      height: MediaQuery.of(context).size.height*0.07,
-                      width: MediaQuery.of(context).size.width*0.4,
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.only(topLeft:Radius.circular(20.0),bottomRight: Radius.circular(20.0)),
-                          boxShadow: [BoxShadow(color: Colors.black54,spreadRadius: 1.0,blurRadius: 4.0,offset: Offset(2.0,4.0))]
-                      ),
-                      child: Center(
-                        child: Text("Login" ,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: GFS(20, context),
-                            fontWeight: FontWeight.w600
+                          },
+                        child: Container(
+                          height: MediaQuery.of(context).size.height*0.07,
+                          width: MediaQuery.of(context).size.width*0.4,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.only(topLeft:Radius.circular(20.0),bottomRight: Radius.circular(20.0)),
+                              boxShadow: [BoxShadow(color: Colors.black54,spreadRadius: 1.0,blurRadius: 4.0,offset: Offset(2.0,4.0))]
                           ),
-                        ),
-                      ),
+                          child: Center(
+                            child: Text("SignUp" ,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: GFS(20, context),
+                                  fontWeight: FontWeight.w600
+                              ),
+                            ),
+                          ),
 
-                    ),
+                        ),
+                      ), ///Create
+                    ],
                   )
                 ],
               ),
