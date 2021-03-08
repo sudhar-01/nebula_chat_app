@@ -73,12 +73,7 @@ class _PersonalChatState extends State<PersonalChat> {
                                 MainAxisAlignment
                                     .spaceAround,
                                 children: [
-                                  CircleAvatar(backgroundColor: Colors.black26,radius:MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height *
-                                        0.11 *
-                                        0.4,),
+                                ProFilePic(id: _personalElementList1[index]["users"].where((value) => !(value.contains(auth.currentUser.uid) as bool)).toString().replaceAll("(", "").replaceAll(")", "")),
                                   Container(
                                     height:
                                     MediaQuery
@@ -125,7 +120,7 @@ class _PersonalChatState extends State<PersonalChat> {
                                         ///name
                                         Container(
                                           child: Text(
-                                            ",,,",
+                                            (_personalElementList1[index]["lastMessage"].toString().length<=20)?_personalElementList1[index]["lastMessage"].toString():_personalElementList1[index]["lastMessage"].toString().substring(0,20),
                                             // fetchLastMessage(auth.currentUser.uid, snapshots
                                             //     .data
                                             //     .docs[
@@ -215,4 +210,32 @@ class _PersonalChatState extends State<PersonalChat> {
           }),
     );
   }
+  String fetchLastMessage(String user1 ,String user2) {
+    String docu1;
+    String msg;
+    Future collect = database.collection("Chats").get().then((value) {
+      var usersinChat = value.docs.map((e) => e.id).toList();
+      docu1 = usersinChat.singleWhere((element) => ((element == user1 +  user2) || (element ==  user2 + user1)),orElse: ()
+      => user1 + user2
+      );
+    }).then((value) {
+      database.collection("Chats").doc(docu1).get().then((value) {
+        setState(() {
+          msg = value.data()["lastMessage"].toString();
+
+        });
+
+
+      });
+    });
+
+    if(msg == null){
+      return "...";
+    }
+    else return msg;
+  }
+
+
+
+
 }

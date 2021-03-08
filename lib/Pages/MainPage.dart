@@ -258,26 +258,3 @@ class BehindBack extends StatelessWidget {
 }
 
 
-String fetchLastMessage(String user1 ,String user2) {
-  String docu1;
-  String msg;
-  Future collect = database.collection("Chats").get().then((value) {
-    var usersinChat = value.docs.map((e) => e.id).toList();
-    docu1 = usersinChat.singleWhere((element) => ((element == user1 +  user2) || (element ==  user2 + user1)),orElse: ()
-    => user1 + user2
-    );
-  }).then((value) {
-    database.collection("Chats").doc(docu1).get().then((value) {
-    msg = value.data()["lastMessage"].toString();
-
-    });
-  });
-
-  if(msg == null){
-    return "...";
-  }
-  else return msg;
-}
-
-
-

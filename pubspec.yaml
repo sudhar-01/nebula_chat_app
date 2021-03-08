@@ -26,7 +26,9 @@ dependencies:
   cloud_firestore:
   firebase_core:
   firebase_auth:
-  dynamic_themes: ^0.1.0+1
+  firebase_storage: ^7.0.0
+  image_picker:
+  dynamic_themes:
   flutter_svg: ^0.19.3
   firebase_messaging:
   google_fonts:

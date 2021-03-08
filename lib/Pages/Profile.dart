@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nebula/backend/FireBase.dart';
 import 'package:nebula/main.dart';
 
@@ -12,12 +14,20 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   TextEditingController controllerName;
+  File _file;
+  var _profilePic;
   TextEditingController controllerEmail;
   TextEditingController controllerToken;
   var _token;
   @override
   void initState() {
     super.initState();
+    database.collection("Users").doc(auth.currentUser.uid).get().then((value) {
+      setState(() {
+        _profilePic = value.data()["ProfilePic"];
+
+      });
+    });
     FirebaseMessaging().getToken().then((value) {
       _token = value;
       controllerToken = TextEditingController(text: _token);
@@ -66,10 +76,25 @@ class _ProfileState extends State<Profile> {
                     child: Container(
                       child: Stack(
                         children: [
-                          Container(color: Colors.red,),
+                          (_profilePic == null || _profilePic.isEmpty)?Container(
+                            width: MediaQuery.of(context).size.width,
+                            color: Colors.grey,
+                            child: Center(child:Icon(Icons.person,color: Colors.white,),),
+                          ):
+                              Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Image.network(_profilePic,fit: BoxFit.cover,)),
                           Container(
                             alignment: Alignment.bottomRight,
-                            child: IconButton(icon: FaIcon(FontAwesomeIcons.camera,color: Colors.white,), onPressed: () => null),
+                            child: IconButton(icon: FaIcon(FontAwesomeIcons.camera,color: Colors.white,), onPressed: () async{
+                              var selectedImage = await ImagePicker().getImage(source: ImageSource.gallery);
+                              if(selectedImage != null){
+                                setState(() {
+                                  _file = File(selectedImage.path);
+                                  _profilePic = addImage(_file);
+                                });
+                              }
+                            }),
                           )
                         ],
                       ),

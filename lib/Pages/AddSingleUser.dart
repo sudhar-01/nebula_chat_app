@@ -54,7 +54,11 @@ class _AddSingleUserState extends State<AddSingleUser> {
                                                   SeconduserName:_personalElementList2[index]["Name"].toString(),
                                                 ))),
                                 child:ListTile(
-                                  leading: CircleAvatar(backgroundColor: Colors.grey,radius: MediaQuery.of(context).size.width*0.1,),
+                                  leading: CircleAvatar(
+                                    backgroundImage:
+                                    NetworkImage(
+                                      _personalElementList2[index]["ProfilePic"],),
+                                  ),
                                   title: Text(
                                              _personalElementList2[
                                               index]
@@ -76,103 +80,7 @@ class _AddSingleUserState extends State<AddSingleUser> {
                                             ),
                                           ),
                                 )
-                                // child: Container(
-                                //   height: MediaQuery
-                                //       .of(context)
-                                //       .size
-                                //       .height *
-                                //       0.07,
-                                //   width: MediaQuery
-                                //       .of(context)
-                                //       .size
-                                //       .width *
-                                //       0.9,
-                                //   decoration: BoxDecoration(
-                                //       color: Theme.of(context).cardColor,
-                                //       // gradient: LinearGradient(begin: Alignment.centerLeft,end: Alignment.centerRight,colors: [Color(0xFFD5DAFF),Color(0xFFE0ECFF),Color(0xFFD8DEFF),Color(0xFFE7EDFF),Color(0xFFD4C9FF),]),
-                                //       borderRadius:
-                                //       BorderRadius.circular(
-                                //           5.0),
-                                //       boxShadow: [
-                                //         BoxShadow(
-                                //             color: Colors
-                                //                 .black26,
-                                //             spreadRadius: 1.0,
-                                //             blurRadius: 4.0,
-                                //             offset:
-                                //             Offset(2.0, 4.0))
-                                //       ]),
-                                //   child: Row(
-                                //     mainAxisAlignment:
-                                //     MainAxisAlignment
-                                //         .spaceEvenly,
-                                //     children: [
-                                //       Container(
-                                //         height:
-                                //         MediaQuery
-                                //             .of(context)
-                                //             .size
-                                //             .height *
-                                //             0.07 *
-                                //             0.75,
-                                //         width:
-                                //         MediaQuery
-                                //             .of(context)
-                                //             .size
-                                //             .width *
-                                //             0.8 *
-                                //             0.15,
-                                //         decoration: BoxDecoration(
-                                //           color: Colors.black26,
-                                //           borderRadius:
-                                //           BorderRadius
-                                //               .circular(5.0),
-                                //         ),
-                                //       ),
-                                //
-                                //       ///picture
-                                //       Container(
-                                //         height:
-                                //         MediaQuery
-                                //             .of(context)
-                                //             .size
-                                //             .height *
-                                //             0.11 *
-                                //             0.9,
-                                //         width:
-                                //         MediaQuery
-                                //             .of(context)
-                                //             .size
-                                //             .width *
-                                //             0.8 *
-                                //             0.65,
-                                //         child: Container(
-                                //           child: Text(
-                                //            _personalElementList2[
-                                //             index]
-                                //             ["Name"]
-                                //                 .toString(),
-                                //             style: TextStyle(
-                                //                 fontWeight:
-                                //                 FontWeight
-                                //                     .w600,
-                                //                 fontSize: GFS(
-                                //                     20,
-                                //                     context),
-                                //                 color: Theme
-                                //                     .of(
-                                //                     context)
-                                //                     .textTheme
-                                //                     .headline1
-                                //                     .color),
-                                //           ),
-                                //         ),
-                                //       )
-                                //
-                                //       ///Details
-                                //     ],
-                                //   ),
-                                // ),
+
 
                             ),
                           );
