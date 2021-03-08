@@ -36,6 +36,54 @@ addImage(File _image) {
   });
 }
 
+addImageInChats(File _image,String document,String SecondUserId,String SeconduserName) {
+  storage.ref().child("Chats/${FieldValue.serverTimestamp()}").putFile(_image).then((value) {
+    value.ref.getDownloadURL().then((url) {
+      database.collection("Chats").doc(document).collection("Messages").add(
+          {
+            "from":auth.currentUser.uid.toString(),
+            "message": "image",
+            "image": url,
+            "timestamp" : FieldValue.serverTimestamp()
+
+          });
+      database.collection("Chats").doc(document).set({
+        "users" : [auth.currentUser.uid,SecondUserId],
+        "names" : [auth.currentUser.displayName,SeconduserName],
+        "lastMessage" : "image",
+        "type": "Personnel"
+      },);
+    });
+  });
+
+}
+
+
+addImageInGroupChats(File _image,String document,List<dynamic> members) {
+  storage.ref().child("Chats/${FieldValue.serverTimestamp()}")
+      .putFile(_image)
+      .then((value) {
+    value.ref.getDownloadURL().then((url) {
+      database.collection("GroupChats").doc(document).collection("Messages").add(
+          {
+            "from":auth.currentUser.uid.toString(),
+            "fromName":auth.currentUser.displayName.toString(),
+            "message":"image",
+            "image":url,
+            "timestamp" : FieldValue.serverTimestamp()
+
+          });
+      database.collection("GroupChats").doc(document).set({
+        "users" : members,
+        "Name":document,
+        "lastMessage" : "image",
+        "type": "Personnel"
+      },);
+    });
+  });
+}
+
+
 class ProFilePic extends StatefulWidget {
   final String id;
 

@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nebula/backend/FireBase.dart';
 import 'package:nebula/backend/pics.dart';
 import 'package:nebula/main.dart';
@@ -76,12 +78,15 @@ class _GroupInChatState extends State<GroupInChat> {
                                   }
                                   return ReceiveContainer(
                                       text: snapshot.data.docs[index]["message"].toString(),
+                                    image:snapshot.data.docs[index]["image"].toString(),
                                     fromName:snapshot.data.docs[index]["fromName"].toString()
                                   );
                                 }
                                 else{
                                   return SendContainer(
-                                    text: snapshot.data.docs[index]["message"].toString(), status: "seen",);
+                                    text: snapshot.data.docs[index]["message"].toString(),
+                                    image:snapshot.data.docs[index]["image"].toString(),
+                                    status: "seen",);
                                 }
 
                               }
@@ -114,6 +119,12 @@ class _GroupInChatState extends State<GroupInChat> {
                           ),
 
                           decoration: InputDecoration(
+                              suffixIcon: IconButton(icon: Icon(Icons.camera), onPressed: () async{
+                                var _image = await ImagePicker().getImage(source: ImageSource.gallery);
+                                if(_image!=null){
+                                 addImageInGroupChats(File(_image.path),nameOfGroup,members);
+                                }
+                              }),
                               focusColor: Colors.black,
                               hintText: 'Type here',
                               border: InputBorder.none,
@@ -154,6 +165,7 @@ class _GroupInChatState extends State<GroupInChat> {
                                 "from":auth.currentUser.uid.toString(),
                                 "fromName":auth.currentUser.displayName.toString(),
                                 "message": _messageController.text,
+                                "image": null,
                                 "timestamp" : FieldValue.serverTimestamp()
 
                               });
@@ -200,7 +212,8 @@ class _GroupInChatState extends State<GroupInChat> {
 class ReceiveContainer extends StatelessWidget {
   final String text;
   final String fromName;
-  const ReceiveContainer({Key key, this.text,this.fromName}) : super(key: key);
+  final String image;
+  const ReceiveContainer({Key key, this.text,this.fromName,this.image}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -238,14 +251,32 @@ class ReceiveContainer extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.only(left:MediaQuery.of(context).size.width*0.02 ),
-              child: Container(
+              child: (text != "image")?
+              Container(
                 child: SelectableText(fromName,style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: GFS(12, context),
                     color:Theme.of(context).textTheme.headline1.color
                 ),
                 ),
-              ),
+              ):
+              Container(
+                width: MediaQuery.of(context).size.width*0.5,
+                height:  MediaQuery.of(context).size.width*0.5,
+                decoration: BoxDecoration(
+                    color:Theme.of(context).primaryColorDark,
+                 //   borderRadius: BorderRadius.only(topLeft:Radius.circular(20.0),topRight: Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
+                    boxShadow: [BoxShadow(color: Colors.black26,spreadRadius: 1.0,blurRadius: 2.0,offset: Offset(-1.0,1.5))]
+
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                  child:  Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Image.network(image,fit: BoxFit.fill,)),
+                ),
+
+              )
             ),
           ],
         ),
@@ -256,7 +287,8 @@ class ReceiveContainer extends StatelessWidget {
 class SendContainer extends StatelessWidget {
   final String text;
   final String status;
-  const SendContainer({Key key, this.text,this.status}) : super(key: key);
+  final String image;
+  const SendContainer({Key key, this.text,this.status,this.image}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -270,12 +302,12 @@ class SendContainer extends StatelessWidget {
           children: [
             Container(
                 height: MediaQuery.of(context).size.height*0.03,
-                width: MediaQuery.of(context).size.width*0.1,
-                //child: checkStatus(status)
+                width: MediaQuery.of(context).size.width*0.1
             ),
             Padding(
               padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02,bottom: MediaQuery.of(context).size.height*0.02,left:MediaQuery.of(context).size.width*0.05 ,right:MediaQuery.of(context).size.width*0.02  ),
-              child: Container(
+              child: (text != "image")?
+              Container(
                 constraints: BoxConstraints(
                   minWidth: MediaQuery.of(context).size.width*0.1,
                   maxWidth: MediaQuery.of(context).size.width*0.5,
@@ -296,7 +328,27 @@ class SendContainer extends StatelessWidget {
                   ),),
                 ),
 
-              ),
+              ):
+              Container(
+                width: MediaQuery.of(context).size.width*0.5,
+                height:  MediaQuery.of(context).size.width*0.5,
+                decoration: BoxDecoration(
+                    color:Theme.of(context).primaryColorDark,
+                   // borderRadius: BorderRadius.only(topLeft:Radius.circular(20.0),topRight: Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
+                    boxShadow: [BoxShadow(color: Colors.black26,spreadRadius: 1.0,blurRadius: 2.0,offset: Offset(-1.0,1.5))]
+
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                  child:  Container(
+
+                      width: MediaQuery.of(context).size.width,
+                      child: Image.network(image,fit: BoxFit.fill,)),
+                ),
+
+              )
+
+
             ),
           ],
         ),

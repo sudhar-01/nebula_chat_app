@@ -92,7 +92,7 @@ class _PersonalChatState extends State<PersonalChat> {
                                     child: Column(
                                       mainAxisAlignment:
                                       MainAxisAlignment
-                                          .spaceBetween,
+                                          .spaceEvenly,
                                       crossAxisAlignment:
                                       CrossAxisAlignment
                                           .start,
@@ -121,12 +121,6 @@ class _PersonalChatState extends State<PersonalChat> {
                                         Container(
                                           child: Text(
                                             (_personalElementList1[index]["lastMessage"].toString().length<=20)?_personalElementList1[index]["lastMessage"].toString():_personalElementList1[index]["lastMessage"].toString().substring(0,20),
-                                            // fetchLastMessage(auth.currentUser.uid, snapshots
-                                            //     .data
-                                            //     .docs[
-                                            // index]
-                                            // ["Id"]
-                                            //     .toString() ),
                                             style: TextStyle(
                                                 fontWeight:
                                                 FontWeight
@@ -144,47 +138,47 @@ class _PersonalChatState extends State<PersonalChat> {
                                         ),
 
                                         ///Chat
-                                        Container(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment
-                                                .spaceBetween,
-                                            children: [
-                                              Text(
-                                                "online",
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w600,
-                                                    fontSize: GFS(
-                                                        14,
-                                                        context),
-                                                    color: Color(
-                                                        0xFF00C313)),
-                                              ),
-                                              Container(
-                                                height: MediaQuery
-                                                    .of(
-                                                    context)
-                                                    .size
-                                                    .height *
-                                                    0.11 *
-                                                    0.9 *
-                                                    0.2,
-                                                width: MediaQuery
-                                                    .of(
-                                                    context)
-                                                    .size
-                                                    .width *
-                                                    0.8 *
-                                                    0.65 *
-                                                    0.15,
-                                                color: Color(
-                                                    0xFF0900FF),
-                                              )
-                                            ],
-                                          ),
-                                        )
+                                        // Container(
+                                        //   child: Row(
+                                        //     mainAxisAlignment:
+                                        //     MainAxisAlignment
+                                        //         .spaceBetween,
+                                        //     children: [
+                                        //       Text(
+                                        //         "online",
+                                        //         style: TextStyle(
+                                        //             fontWeight:
+                                        //             FontWeight
+                                        //                 .w600,
+                                        //             fontSize: GFS(
+                                        //                 14,
+                                        //                 context),
+                                        //             color: Color(
+                                        //                 0xFF00C313)),
+                                        //       ),
+                                        //       Container(
+                                        //         height: MediaQuery
+                                        //             .of(
+                                        //             context)
+                                        //             .size
+                                        //             .height *
+                                        //             0.11 *
+                                        //             0.9 *
+                                        //             0.2,
+                                        //         width: MediaQuery
+                                        //             .of(
+                                        //             context)
+                                        //             .size
+                                        //             .width *
+                                        //             0.8 *
+                                        //             0.65 *
+                                        //             0.15,
+                                        //         color: Color(
+                                        //             0xFF0900FF),
+                                        //       )
+                                        //     ],
+                                        //   ),
+                                        // )
                                       ],
                                     ),
                                   )

@@ -123,7 +123,8 @@ class _AddUserState extends State<AddUser> {
                 flex: 1,
                   child: InkWell(
                     onTap: () {
-                      if(_groupName.text.isNotEmpty && listValue.length>=2){
+                      var selectedMembers = listValue.where((element) => element["isSelected"] == true).map((e) => e["Id"]).toList();
+                      if(_groupName.text.isNotEmpty && (selectedMembers.length>=2)){
                         listValue.add({
                           "Name" :auth.currentUser.displayName,
                           "Id":auth.currentUser.uid,
@@ -141,12 +142,13 @@ class _AddUserState extends State<AddUser> {
                               "from": auth.currentUser.uid.toString(),
                               "fromName":auth.currentUser.displayName,
                               "message": "hi",
+                              "image": null,
                               "timestamp" : FieldValue.serverTimestamp()
                             });
                         _groupName.text = "";
                         Navigator.pop(context);
                       }
-                      else if(listValue.length<2){
+                      else if(selectedMembers.length<2){
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor:Colors.red,duration: Duration(seconds: 1),content: Text("There must be more than 2 members in a group")));
 
 

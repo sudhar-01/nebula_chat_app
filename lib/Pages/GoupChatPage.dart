@@ -111,7 +111,7 @@ class _GroupChatState extends State<GroupChat> {
                                   child: Column(
                                     mainAxisAlignment:
                                     MainAxisAlignment
-                                        .spaceBetween,
+                                        .center,
                                     crossAxisAlignment:
                                     CrossAxisAlignment
                                         .start,
@@ -141,13 +141,9 @@ class _GroupChatState extends State<GroupChat> {
 
                                       ///name
                                       Container(
-                                        child: Text("heelo",
-                                          // fetchLastMessage(auth.currentUser.uid, snapshots
-                                          //     .data
-                                          //     .docs[
-                                          // index]
-                                          // ["Id"]
-                                          //     .toString() ),
+                                        child: Text(
+                                          (elementList[index]["lastMessage"].toString().length<=20)?elementList[index]["lastMessage"].toString():elementList[index]["lastMessage"].toString().substring(0,20),
+
                                           style: TextStyle(
                                               fontWeight:
                                               FontWeight
@@ -165,52 +161,18 @@ class _GroupChatState extends State<GroupChat> {
                                       ),
 
                                       ///Chat
-                                      Container(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .spaceBetween,
-                                          children: [
-                                            Text(
-                                              "online",
-                                              style: TextStyle(
-                                                  fontWeight:
-                                                  FontWeight
-                                                      .w600,
-                                                  fontSize: GFS(
-                                                      14,
-                                                      context),
-                                                  color: Color(
-                                                      0xFF00C313)),
-                                            ),
-                                            Container(
-                                              height: MediaQuery
-                                                  .of(
-                                                  context)
-                                                  .size
-                                                  .height *
-                                                  0.11 *
-                                                  0.9 *
-                                                  0.2,
-                                              width: MediaQuery
-                                                  .of(
-                                                  context)
-                                                  .size
-                                                  .width *
-                                                  0.8 *
-                                                  0.65 *
-                                                  0.15,
-                                              color: Color(
-                                                  0xFF0900FF),
-                                            )
-                                          ],
-                                        ),
-                                      )
+
                                     ],
                                   ),
-                                )
+                                ),
 
                                 ///Details
+                                ///
+                                IconButton(icon: Icon(Icons.delete), onPressed: (){
+
+                                  database.collection("GroupChats").doc(elementList[index]["Name"]).delete();
+
+                                })
                               ],
                             ),
                           ),
